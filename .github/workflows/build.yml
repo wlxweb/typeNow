@@ -3,6 +3,7 @@ name: Build
 on:
   push:
     branches: [main]
+    tags: ["v*"]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -10,7 +11,6 @@ on:
 jobs:
   build:
     runs-on: macos-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -29,3 +29,30 @@ jobs:
         with:
           name: typeNow.app
           path: typeNow.app
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Release
+        run: swift build -c release
+
+      - name: Create .app bundle
+        run: |
+          mkdir -p typeNow.app/Contents/MacOS
+          mkdir -p typeNow.app/Contents/Resources
+          cp .build/release/typeNow typeNow.app/Contents/MacOS/
+          cp Resources/Info.plist typeNow.app/Contents/Info.plist
+
+      - name: Package .dmg
+        run: |
+          hdiutil create -volname typeNow -srcfolder typeNow.app -ov -format UDZO typeNow.dmg
+
+      - name: Publish Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: typeNow.dmg
+          generate_release_notes: true
