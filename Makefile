@@ -1,4 +1,4 @@
-.PHONY: build run clean app open
+.PHONY: build run clean app open icon
 
 build:
 	swift build -c release
@@ -9,7 +9,10 @@ run:
 clean:
 	swift package clean
 
-app: build
+icon:
+	./scripts/generate-icon.sh
+
+app: build icon
 	mkdir -p typeNow.app/Contents/MacOS
 	mkdir -p typeNow.app/Contents/Resources
 	cp .build/release/typeNow typeNow.app/Contents/MacOS/
