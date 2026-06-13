@@ -10,6 +10,8 @@
 	<string>com.webwlx.typeNow</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleIconFile</key>
+	<string>icon</string>
 	<key>CFBundleName</key>
 	<string>typeNow</string>
 	<key>CFBundlePackageType</key>
